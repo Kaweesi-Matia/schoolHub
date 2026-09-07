@@ -111,67 +111,98 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
+    <div className="dashboard">
+      <header className="dashboard-header">
+        <h1>Dashboard</h1>
+        <div className="dashboard-actions">
+          {role === "admin" ? (
+            <Link to="/add-course" className="btn btn-secondary">
+              Add Course
+            </Link>
+          ) : null}
+          <button type="button" className="btn btn-ghost" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      </header>
 
-      {error ? <p style={{ color: "red" }}>{error}</p> : null}
-
-      <button onClick={logout}>Logout</button>
+      {error ? <p className="dashboard-error">{error}</p> : null}
 
       {role === "admin" ? (
-        <>
-          <p>
-            <Link to="/add-course">Add Course</Link>
-          </p>
-
+        <section className="panel">
           <h2>Users</h2>
+          {users.length === 0 ? (
+            <p className="empty">No users yet</p>
+          ) : (
+            <ul className="plain-list">
+              {users.map((user) => (
+                <li className="list-row" key={user._id}>
+                  <span>
+                    {user.email} ({user.role})
+                  </span>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => deleteUser(user._id)}
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
 
-          <ul>
-            {users.map((user) => (
-              <li key={user._id}>
-                {user.email} ({user.role})
-                <button onClick={() => deleteUser(user._id)}>
-                  Delete
-                </button>
+      <section className="panel">
+        <h2>Courses</h2>
+        {courses.length === 0 ? (
+          <p className="empty">No courses yet</p>
+        ) : (
+          <ul className="plain-list">
+            {courses.map((course) => (
+              <li className="list-row" key={course._id}>
+                <span>{course.title}</span>
+                {role === "admin" ? (
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => deleteCourse(course._id)}
+                  >
+                    Delete
+                  </button>
+                ) : null}
               </li>
             ))}
           </ul>
-        </>
-      ) : null}
+        )}
+      </section>
 
-      <h2>Courses</h2>
-
-      <ul>
-        {courses.map((course) => (
-          <li key={course._id}>
-            {course.title}
-
-            {role === "admin" ? (
-              <button onClick={() => deleteCourse(course._id)}>
-                Delete
-              </button>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-
-      <h2>Enrollments</h2>
-
-      <ul>
-        {enrollments.map((enrollment) => (
-          <li key={enrollment._id}>
-            {enrollment.email} - {enrollment.courseTitle}
-
-            {role === "admin" ? (
-              <button
-                onClick={() => deleteEnrollment(enrollment._id)}
-              >
-                Delete
-              </button>
-            ) : null}
-          </li>
-        ))}
-      </ul>
+      <section className="panel">
+        <h2>Enrollments</h2>
+        {enrollments.length === 0 ? (
+          <p className="empty">No enrollments yet</p>
+        ) : (
+          <ul className="plain-list">
+            {enrollments.map((enrollment) => (
+              <li className="list-row" key={enrollment._id}>
+                <span>
+                  {enrollment.email} - {enrollment.courseTitle}
+                </span>
+                {role === "admin" ? (
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => deleteEnrollment(enrollment._id)}
+                  >
+                    Delete
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
