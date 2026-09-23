@@ -1,1 +1,1 @@
-# schoolHub.
+# schoolHub
